@@ -4,7 +4,7 @@ from assets import assets
 
 pygame.init()
 
-screen_width = 500
+screen_width = 900
 screen_height = 500
 fps = 60
 
@@ -13,7 +13,7 @@ mainAssets = assets(pygame).mainAssets()
 win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Glorious Unnamed Game")
 
-man = player(200, 410, 64, 64, assets(pygame).getMan())
+man = player(pygame, 200, 410, 64, 64, assets(pygame).getMan())
 
 def redrawGameWindow():
     global walkCount
@@ -30,7 +30,7 @@ while run:
         if event.type == pygame.QUIT:
                 run = False
 
-    man.move(pygame, screen_width, screen_height)
+    man.move(screen_width, screen_height)
 
     redrawGameWindow()
 
