@@ -9,7 +9,7 @@ class player(object):
         self.height = height
         self.vel = 5
         self.isJump = False
-        self.jumpCount = 10
+        self.jumpCount = 8
         self.left = False
         self.right = False
         self.walkCount = 0
@@ -58,7 +58,7 @@ class player(object):
                     projectile(
                         round(self.x + self.width // 2),
                         round(self.y + self.height // 2),
-                        6,
+                        3,
                         (0, 0, 0),
                         facing
                     )
@@ -85,7 +85,7 @@ class player(object):
                 self.right = False
                 self.walkCount = 0
         else:
-            if self.jumpCount >= -10:
+            if self.jumpCount >= -8:
                 neg = 1
                 if self.jumpCount < 0:
                     neg = -1
@@ -94,6 +94,6 @@ class player(object):
                 self.jumpCount -= 1
             else:
                 self.isJump = False
-                self.jumpCount = 10
+                self.jumpCount = 8
 
 
