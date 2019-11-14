@@ -20,7 +20,7 @@ goblin = enemy(pygame, 100, 410, 64, 64, 450, assets(pygame).getEnemy())
 def redrawGameWindow():
     win.blit(mainAssets.bg, (0, 0))
     man.draw(win)
-    goblin.draw(win)
+    goblin.draw(win, man)
     pygame.display.update()
 
 #mainLoop

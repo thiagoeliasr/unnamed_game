@@ -10,10 +10,11 @@ class enemy(object):
         self.end = end
         self.assets = assets
         self.walkCount = 0
-        self.path = [self.x, self.end]
+        self.path = self.x
         self.vel = 3
 
-    def draw(self, win):
+    def draw(self, win, player):
+        self.path = player.x
         self.move()
         assetCount = len(self.assets.left) + len(self.assets.right)
 
@@ -29,13 +30,13 @@ class enemy(object):
 
     def move(self):
         if self.vel > 0:
-            if self.x + self.vel < self.path[1]:
+            if self.x + self.vel < self.path:
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
                 self.walkCount = 0
         else:
-            if self.x - self.vel > self.path[0]:
+            if self.x - self.vel > self.path:
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
