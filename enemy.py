@@ -11,7 +11,9 @@ class enemy(object):
         self.assets = assets
         self.walkCount = 0
         self.path = self.x
-        self.vel = 3
+        self.vel = 2
+        self.life = 100
+        self.strength = 10
 
     def draw(self, win, player):
         self.path = player.x

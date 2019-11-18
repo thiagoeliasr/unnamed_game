@@ -17,10 +17,16 @@ class player(object):
         self.standing = True
         self.bullets = []
         self.pygame = pygame
+        self.life = 100
+        self.shootCount = 0
 
     def draw(self, win):
         if self.walkCount + 1 >= 27:
             self.walkCount = 0
+
+        self.shootCount += 1
+        if self.shootCount > 5:
+            self.shootCount = 0
 
         if not(self.standing):
             if self.left:
@@ -54,15 +60,16 @@ class player(object):
 
         if keys[self.pygame.K_SPACE]:
             if len(self.bullets) < 5:
-                self.bullets.append(
-                    projectile(
-                        round(self.x + self.width // 2),
-                        round(self.y + self.height // 2),
-                        3,
-                        (0, 0, 0),
-                        facing
+                if self.shootCount == 0:
+                    self.bullets.append(
+                        projectile(
+                            round(self.x + self.width // 2),
+                            round(self.y + self.height // 2),
+                            3,
+                            (0, 0, 0),
+                            facing
+                        )
                     )
-                )
 
         if keys[self.pygame.K_LEFT] and self.x > self.vel:
             self.x -= self.vel
