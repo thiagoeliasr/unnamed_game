@@ -44,6 +44,12 @@ class player(object):
         for bullet in self.bullets:
             bullet.draw(win, self.pygame)
 
+    def checkHit(self, x, y, strength):
+        if x > (self.x - 10) and x < (self.x + 10) and self.life > 0:
+            if y < self.y + 15:
+                self.life -= strength
+                if self.life < 0:
+                    self.life = 0
 
     def move(self, screen_width, screen_height):
         keys = self.pygame.key.get_pressed()
