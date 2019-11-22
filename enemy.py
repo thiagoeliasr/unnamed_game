@@ -14,6 +14,7 @@ class enemy(object):
         self.vel = 2
         self.life = 100
         self.strength = 10
+        self.hitbox = (self.x + 17, self.y + 2, 31, 57)
 
     def draw(self, win, player):
         self.path = player.x
@@ -37,6 +38,9 @@ class enemy(object):
         win.blit(health, [self.x + 20, self.y - 10])
         win.blit(healthValue, [self.x + 60, self.y - 10])
 
+        self.hitbox = (self.x + 17, self.y + 2, 31, 57)
+        self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+
 
     def move(self):
         if self.vel > 0:
@@ -51,3 +55,16 @@ class enemy(object):
             else:
                 self.vel = self.vel * -1
                 self.walkCount = 0
+
+    def checkHit(self, player):
+        for bullet in player.bullets:
+            if bullet.y - bullet.radius < self.hitbox[1] + self.hitbox[3] and bullet.y + bullet.radius > self.hitbox[1]:
+                if bullet.x + bullet.radius > self.hitbox[0] and bullet.x - bullet.radius < self.hitbox[0] + self.hitbox[2]:
+                    self.hit(player, bullet)
+
+    def hit(self, player, projectile):
+        player.bullets.pop(player.bullets.index(projectile))
+        self.life -= projectile.strength
+
+
+

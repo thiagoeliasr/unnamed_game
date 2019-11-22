@@ -80,6 +80,9 @@ while run:
     man.move(screen_width, screen_height)
     for goblin in enemies:
         man.checkHit(goblin.x, goblin.y, goblin.strength)
+        goblin.checkHit(man) # Checking if this goblin was hit by any of player's bullets
+        if goblin.life < 1:
+            enemies.pop(enemies.index(goblin))
 
     redrawGameWindow()
 

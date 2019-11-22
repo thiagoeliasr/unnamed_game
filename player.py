@@ -19,6 +19,7 @@ class player(object):
         self.pygame = pygame
         self.life = 100
         self.shootCount = 0
+        self.hitbox = (self.x + 17, self.y + 11, 29, 52)
 
     def draw(self, win):
         if self.walkCount + 1 >= 27:
@@ -43,6 +44,9 @@ class player(object):
 
         for bullet in self.bullets:
             bullet.draw(win, self.pygame)
+
+        self.hitbox = (self.x + 17, self.y + 11, 29, 52)
+        self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def checkHit(self, x, y, strength):
         if x > (self.x - 10) and x < (self.x + 10) and self.life > 0:

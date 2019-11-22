@@ -8,7 +8,9 @@ class projectile(object):
         self.color = color
         self.facing = facing
         self.vel = 8 * facing
+        self.strength = 50
 
     def draw(self, win, pygame):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+
 
