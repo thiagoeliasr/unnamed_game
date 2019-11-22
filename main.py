@@ -19,6 +19,7 @@ font = pygame.font.Font("fonts/Abibas.ttf", 35)
 fontSmall = pygame.font.Font("fonts/Abibas.ttf", 25)
 
 textHealth = font.render("Health: ", True, (255, 255, 255))
+textScore = fontSmall.render("Score: ", True, (255, 0, 0))
 textDied = font.render("You Died", True, (255, 0, 0))
 textNewGame = fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
 
@@ -39,6 +40,7 @@ def initEnemies():
 def resetGame():
     man.life = 100
     man.x = 200
+    man.score = 0
     initEnemies()
 
 def redrawGameWindow():
@@ -48,6 +50,9 @@ def redrawGameWindow():
         win.fill((0, 0, 0))
         win.blit(textDied, [screen_width // 2 - textDied.get_width() // 2, screen_height // 2 - textDied.get_height() //2])
         win.blit(textNewGame, [screen_width // 2 - textNewGame.get_width() // 2, screen_height // 2 - textNewGame.get_height() // 2 + 80])
+
+        txtFinalScore = font.render("Final Score: {}".format(man.score), True, (255, 0, 0))
+        win.blit(txtFinalScore, [screen_width // 2 - txtFinalScore.get_width() // 2, screen_height // 2 - txtFinalScore.get_height() // 2 + 120])
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]:
@@ -62,6 +67,10 @@ def redrawGameWindow():
         textHealthValue = font.render(str(man.life), True, (255, 255, 255))
         win.blit(textHealth, [10, 10])
         win.blit(textHealthValue, [textHealth.get_width() + 10, 10])
+
+        textScoreValue = fontSmall.render(str(man.score), True, (255, 0, 0))
+        win.blit(textScore, [10, 50])
+        win.blit(textScoreValue, [textScore.get_width() + 10, 50])
 
     pygame.display.update()
 
@@ -83,6 +92,9 @@ while run:
         goblin.checkHit(man) # Checking if this goblin was hit by any of player's bullets
         if goblin.life < 1:
             enemies.pop(enemies.index(goblin))
+
+    if len(enemies) == 0:
+        initEnemies()
 
     redrawGameWindow()
 

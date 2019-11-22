@@ -39,7 +39,7 @@ class enemy(object):
         win.blit(healthValue, [self.x + 60, self.y - 10])
 
         self.hitbox = (self.x + 17, self.y + 2, 31, 57)
-        self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        # self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
 
     def move(self):
@@ -64,6 +64,7 @@ class enemy(object):
 
     def hit(self, player, projectile):
         player.bullets.pop(player.bullets.index(projectile))
+        player.score += abs(self.vel) # Score will depend on enemy velocity
         self.life -= projectile.strength
 
 

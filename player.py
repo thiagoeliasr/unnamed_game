@@ -5,6 +5,7 @@ class player(object):
     def __init__(self, pygame, x, y, width, height, assets):
         self.x = x
         self.y = y
+        self.score = 0
         self.width = width
         self.height = height
         self.vel = 5
@@ -46,7 +47,7 @@ class player(object):
             bullet.draw(win, self.pygame)
 
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
-        self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        # self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def checkHit(self, x, y, strength):
         if x > (self.x - 10) and x < (self.x + 10) and self.life > 0:
