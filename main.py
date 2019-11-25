@@ -11,8 +11,16 @@ screen_height = 500
 fps = 60
 
 clock = pygame.time.Clock()
-mainAssets = assets(pygame).mainAssets()
 win = pygame.display.set_mode((screen_width, screen_height))
+level = pygame.Surface((screen_width, screen_height))
+
+mainAssets = assets(pygame).mainAssets((screen_width, screen_height))
+
+level.blit(mainAssets.bgCloudBack, (0, 0))
+level.blit(mainAssets.bgCloudFront, (0, 0))
+level.blit(mainAssets.bgBack, (0, 0))
+level.blit(mainAssets.bgFront, (0, 0))
+
 pygame.display.set_caption("The Glorious Unnamed Game")
 
 font = pygame.font.Font("fonts/Abibas.ttf", 35)
@@ -59,8 +67,11 @@ def redrawGameWindow():
             resetGame()
 
     else:
-        win.blit(mainAssets.bg, (0, 0))
+        # Drawing bg images
+        win.blit(level, win.get_rect())
+
         man.draw(win)
+
         for goblin in enemies:
             goblin.draw(win, man)
 

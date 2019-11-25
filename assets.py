@@ -8,9 +8,16 @@ class assets():
         self.chImages = self.imgPath + 'character/'
         self.pygame = pygame
 
-    def mainAssets(self):
+    def mainAssets(self, dimensions):
         obj = Object()
-        obj.bg = self.pygame.image.load(self.imgPath + 'bg.png')
+        obj.bgBack = self.pygame.image.load(self.imgPath + 'background/BGBack.png').convert_alpha()
+        obj.bgBack = self.pygame.transform.scale(obj.bgBack, dimensions)
+        obj.bgFront = self.pygame.image.load(self.imgPath + 'background/BGFront.png').convert_alpha()
+        obj.bgFront = self.pygame.transform.scale(obj.bgFront, dimensions)
+        obj.bgCloudBack = self.pygame.image.load(self.imgPath + 'background/CloudsBack.png').convert_alpha()
+        obj.bgCloudBack = self.pygame.transform.scale(obj.bgCloudBack, dimensions)
+        obj.bgCloudFront = self.pygame.image.load(self.imgPath + 'background/CloudsFront.png').convert_alpha()
+        obj.bgCloudFront = self.pygame.transform.scale(obj.bgCloudFront, dimensions)
 
         return obj
 
