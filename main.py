@@ -21,6 +21,11 @@ level.blit(mainAssets.bgCloudFront, (0, 0))
 level.blit(mainAssets.bgBack, (0, 0))
 level.blit(mainAssets.bgFront, (0, 0))
 
+ground = assets(pygame).getGroundBlock()
+
+for x in range(0, screen_width, 48):
+    level.blit(ground.img, (x, screen_height - ground.h))
+
 pygame.display.set_caption("The Glorious Unnamed Game")
 
 font = pygame.font.Font("fonts/Abibas.ttf", 35)
@@ -31,28 +36,30 @@ textScore = fontSmall.render("Score: ", True, (255, 0, 0))
 textDied = font.render("You Died", True, (255, 0, 0))
 textNewGame = fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
 
-man = player(pygame, 200, 410, 64, 64, assets(pygame).getMan())
+man = player(pygame, (screen_width - (screen_width / 2) - 65), screen_height - 106, 64, 64, assets(pygame).getMan())
+
+def newEnemy(x):
+    xInit = (random.randint(1, 20)) * 5 * -1
+    if x % 2 == 0:
+        xInit = screen_width + (x + 1) * 5
+
+    e = enemy(pygame, xInit, screen_height - 102, 64, 64, 450, assets(pygame).getEnemy())
+    e.vel = random.randint(1, 4)
+    return e
 
 def initEnemies():
     global enemies
     enemies = []
     for x in range(5):
-        xInit = (random.randint(1, 20)) * 5 * -1
-        if x % 2 == 0:
-            xInit = screen_width + (x + 1) * 5
-
-        goblin = enemy(pygame, xInit, 410, 64, 64, 450, assets(pygame).getEnemy())
-        goblin.vel = random.randint(1, 4)
-        enemies.append(goblin)
+        enemies.append(newEnemy(x))
 
 def resetGame():
     man.life = 100
-    man.x = 200
+    man.x = (screen_width - (screen_width / 2)) - 64
     man.score = 0
     initEnemies()
 
 def redrawGameWindow():
-    global enemies
 
     if man.life < 1:
         win.fill((0, 0, 0))
@@ -90,7 +97,6 @@ def redrawGameWindow():
 run = True
 initEnemies()
 while run:
-    global enemies
     clock.tick(fps)
 
     for event in pygame.event.get():
@@ -104,8 +110,9 @@ while run:
         if goblin.life < 1:
             enemies.pop(enemies.index(goblin))
 
-    if len(enemies) == 0:
-        initEnemies()
+    if len(enemies) < 5:
+        for x in range(0, len(enemies) - 1):
+            enemies.append(newEnemy(x))
 
     redrawGameWindow()
 

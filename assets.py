@@ -47,3 +47,10 @@ class assets():
 
         return obj
 
+    def getGroundBlock(self):
+        obj = Object()
+        obj.w = 48
+        obj.h = 48
+        obj.img = self.pygame.image.load(self.imgPath + 'background/ground.png')
+        return obj
+
