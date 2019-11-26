@@ -4,116 +4,115 @@ from player import player
 from enemy import enemy
 from assets import assets
 
-pygame.init()
+class main():
 
-screen_width = 900
-screen_height = 500
-fps = 60
+    def __init__(self):
+        self.pygame = pygame
+        self.pygame.init()
+        self.screen_width = 900
+        self.screen_height = 500
+        self.fps = 60
+        self.clock = pygame.time.Clock()
+        self.win = self.pygame.display.set_mode((self.screen_width, self.screen_height))
+        self.level = self.pygame.Surface((self.screen_width, self.screen_height))
+        self.mainAssets = assets(self.pygame).mainAssets((self.screen_width, self.screen_height))
+        self.level.blit(self.mainAssets.bgCloudBack, (0, 0))
+        self.level.blit(self.mainAssets.bgCloudFront, (0, 0))
+        self.level.blit(self.mainAssets.bgBack, (0, 0))
+        self.level.blit(self.mainAssets.bgFront, (0, 0))
+        self.ground = assets(self.pygame).getGroundBlock()
+        self.pygame.display.set_caption('The Glorious Unnamed Game')
+        for x in range(0, self.screen_width, 48):
+            self.level.blit(self.ground.img, (x, self.screen_height - self.ground.h))
 
-clock = pygame.time.Clock()
-win = pygame.display.set_mode((screen_width, screen_height))
-level = pygame.Surface((screen_width, screen_height))
+        self.font = pygame.font.Font("fonts/Abibas.ttf", 35)
+        self.fontSmall = pygame.font.Font("fonts/Abibas.ttf", 25)
 
-mainAssets = assets(pygame).mainAssets((screen_width, screen_height))
+        self.textHealth = self.font.render("Health: ", True, (255, 255, 255))
+        self.textScore = self.fontSmall.render("Score: ", True, (255, 0, 0))
+        self.textDied = self.font.render("You Died", True, (255, 0, 0))
+        self.textNewGame = self.fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
 
-level.blit(mainAssets.bgCloudBack, (0, 0))
-level.blit(mainAssets.bgCloudFront, (0, 0))
-level.blit(mainAssets.bgBack, (0, 0))
-level.blit(mainAssets.bgFront, (0, 0))
+        self.man = player(self.pygame, (self.screen_width - (self.screen_width / 2) - 65), self.screen_height - 106, 64, 64, assets(self.pygame).getMan())
+        self.enemies = []
 
-ground = assets(pygame).getGroundBlock()
+    def newEnemy(self, x):
+        xInit = (random.randint(1, 20)) * 5 * -1
+        if x % 2 == 0:
+            xInit = self.screen_width + (x + 1) * 5
 
-for x in range(0, screen_width, 48):
-    level.blit(ground.img, (x, screen_height - ground.h))
+        e = enemy(self.pygame, xInit, self.screen_height - 102, 64, 64, 450, assets(self.pygame).getEnemy())
+        e.vel = random.randint(1, 4)
+        return e
 
-pygame.display.set_caption("The Glorious Unnamed Game")
+    def initEnemies(self):
+        self.enemies = []
+        for x in range(5):
+            self.enemies.append(self.newEnemy(x))
 
-font = pygame.font.Font("fonts/Abibas.ttf", 35)
-fontSmall = pygame.font.Font("fonts/Abibas.ttf", 25)
+    def resetGame(self):
+        self.man.life = 100;
+        self.man.x = (self.screen_width - (self.screen_width / 2)) - 64
+        self.man.score = 0
+        self.initEnemies()
 
-textHealth = font.render("Health: ", True, (255, 255, 255))
-textScore = fontSmall.render("Score: ", True, (255, 0, 0))
-textDied = font.render("You Died", True, (255, 0, 0))
-textNewGame = fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
+    def redraw(self):
+        if self.man.life < 1:
+            self.win.fill((0, 0, 0))
+            self.win.blit(self.textDied, [self.screen_width // 2 - self.textDied.get_width() // 2, self.screen_height // 2 - self.textDied.get_height() //2])
+            self.win.blit(self.textNewGame, [self.screen_width // 2 - self.textNewGame.get_width() // 2, self.screen_height // 2 - self.textNewGame.get_height() // 2 + 80])
 
-man = player(pygame, (screen_width - (screen_width / 2) - 65), screen_height - 106, 64, 64, assets(pygame).getMan())
+            txtFinalScore = self.font.render("Final Score: {}".format(self.man.score), True, (255, 0, 0))
+            self.win.blit(txtFinalScore, [self.screen_width // 2 - txtFinalScore.get_width() // 2, self.screen_height // 2 - txtFinalScore.get_height() // 2 + 120])
 
-def newEnemy(x):
-    xInit = (random.randint(1, 20)) * 5 * -1
-    if x % 2 == 0:
-        xInit = screen_width + (x + 1) * 5
+            keys = self.pygame.key.get_pressed()
+            if keys[self.pygame.K_KP_ENTER] or keys[self.pygame.K_RETURN]:
+                self.resetGame()
 
-    e = enemy(pygame, xInit, screen_height - 102, 64, 64, 450, assets(pygame).getEnemy())
-    e.vel = random.randint(1, 4)
-    return e
+        else:
+            # Drawing bg images
+            self.win.blit(self.level, self.win.get_rect())
 
-def initEnemies():
-    global enemies
-    enemies = []
-    for x in range(5):
-        enemies.append(newEnemy(x))
+            self.man.draw(self.win)
 
-def resetGame():
-    man.life = 100
-    man.x = (screen_width - (screen_width / 2)) - 64
-    man.score = 0
-    initEnemies()
+            for goblin in self.enemies:
+                goblin.draw(self.win, self.man)
 
-def redrawGameWindow():
+            textHealthValue = self.font.render(str(self.man.life), True, (255, 255, 255))
+            self.win.blit(self.textHealth, [10, 10])
+            self.win.blit(textHealthValue, [self.textHealth.get_width() + 10, 10])
 
-    if man.life < 1:
-        win.fill((0, 0, 0))
-        win.blit(textDied, [screen_width // 2 - textDied.get_width() // 2, screen_height // 2 - textDied.get_height() //2])
-        win.blit(textNewGame, [screen_width // 2 - textNewGame.get_width() // 2, screen_height // 2 - textNewGame.get_height() // 2 + 80])
+            textScoreValue = self.fontSmall.render(str(self.man.score), True, (255, 0, 0))
+            self.win.blit(self.textScore, [10, 50])
+            self.win.blit(textScoreValue, [self.textScore.get_width() + 10, 50])
 
-        txtFinalScore = font.render("Final Score: {}".format(man.score), True, (255, 0, 0))
-        win.blit(txtFinalScore, [screen_width // 2 - txtFinalScore.get_width() // 2, screen_height // 2 - txtFinalScore.get_height() // 2 + 120])
+        self.pygame.display.update()
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]:
-            resetGame()
+    def run(self):
+        run = True
+        self.initEnemies()
+        while run:
+            self.clock.tick(self.fps)
 
-    else:
-        # Drawing bg images
-        win.blit(level, win.get_rect())
+            for event in self.pygame.event.get():
+                if event.type == self.pygame.QUIT:
+                        run = False
 
-        man.draw(win)
+            self.man.move(self.screen_width, self.screen_height)
 
-        for goblin in enemies:
-            goblin.draw(win, man)
+            for goblin in self.enemies:
+                self.man.checkHit(goblin.x, goblin.y, goblin.strength)
+                goblin.checkHit(self.man) # Checking if this goblin was hit by any of player's bullets
+                if goblin.life < 1:
+                    self.enemies.pop(self.enemies.index(goblin))
 
-        textHealthValue = font.render(str(man.life), True, (255, 255, 255))
-        win.blit(textHealth, [10, 10])
-        win.blit(textHealthValue, [textHealth.get_width() + 10, 10])
+            if len(self.enemies) < 5:
+                for x in range(0, len(self.enemies) - 1):
+                    self.enemies.append(self.newEnemy(x))
 
-        textScoreValue = fontSmall.render(str(man.score), True, (255, 0, 0))
-        win.blit(textScore, [10, 50])
-        win.blit(textScoreValue, [textScore.get_width() + 10, 50])
+            self.redraw()
 
-    pygame.display.update()
+        self.pygame.quit()
 
 
-#mainLoop
-run = True
-initEnemies()
-while run:
-    clock.tick(fps)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-                run = False
-
-    man.move(screen_width, screen_height)
-    for goblin in enemies:
-        man.checkHit(goblin.x, goblin.y, goblin.strength)
-        goblin.checkHit(man) # Checking if this goblin was hit by any of player's bullets
-        if goblin.life < 1:
-            enemies.pop(enemies.index(goblin))
-
-    if len(enemies) < 5:
-        for x in range(0, len(enemies) - 1):
-            enemies.append(newEnemy(x))
-
-    redrawGameWindow()
-
-pygame.quit()
+main().run()
