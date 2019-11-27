@@ -64,7 +64,7 @@ class enemy(object):
 
     def hit(self, player, projectile):
         player.bullets.pop(player.bullets.index(projectile))
-        player.score += abs(self.vel) # Score will depend on enemy velocity
+        player.score += 1
         self.life -= projectile.strength
 
 

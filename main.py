@@ -7,21 +7,23 @@ from assets import assets
 class main():
 
     def __init__(self):
-        self.pygame = pygame
-        self.pygame.init()
+        pygame.init()
+        pygame.display.set_caption('The Glorious Unnamed Game')
+
         self.screen_width = 900
         self.screen_height = 500
         self.fps = 60
         self.clock = pygame.time.Clock()
-        self.win = self.pygame.display.set_mode((self.screen_width, self.screen_height))
-        self.level = self.pygame.Surface((self.screen_width, self.screen_height))
-        self.mainAssets = assets(self.pygame).mainAssets((self.screen_width, self.screen_height))
+        self.win = pygame.display.set_mode((self.screen_width, self.screen_height))
+        self.level = pygame.Surface((self.screen_width, self.screen_height))
+        self.mainAssets = assets(pygame).mainAssets((self.screen_width, self.screen_height))
         self.level.blit(self.mainAssets.bgCloudBack, (0, 0))
         self.level.blit(self.mainAssets.bgCloudFront, (0, 0))
         self.level.blit(self.mainAssets.bgBack, (0, 0))
         self.level.blit(self.mainAssets.bgFront, (0, 0))
-        self.ground = assets(self.pygame).getGroundBlock()
-        self.pygame.display.set_caption('The Glorious Unnamed Game')
+        self.ground = assets(pygame).getGroundBlock()
+        self.dificultyMultiplier = 0.4
+
         for x in range(0, self.screen_width, 48):
             self.level.blit(self.ground.img, (x, self.screen_height - self.ground.h))
 
@@ -33,7 +35,7 @@ class main():
         self.textDied = self.font.render("You Died", True, (255, 0, 0))
         self.textNewGame = self.fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
 
-        self.man = player(self.pygame, (self.screen_width - (self.screen_width / 2) - 65), self.screen_height - 106, 64, 64, assets(self.pygame).getMan())
+        self.man = player(pygame, (self.screen_width - (self.screen_width / 2) - 65), self.screen_height - 106, 64, 64, assets(pygame).getMan())
         self.enemies = []
 
     def newEnemy(self, x):
@@ -41,8 +43,8 @@ class main():
         if x % 2 == 0:
             xInit = self.screen_width + (x + 1) * 5
 
-        e = enemy(self.pygame, xInit, self.screen_height - 102, 64, 64, 450, assets(self.pygame).getEnemy())
-        e.vel = random.randint(1, 4)
+        e = enemy(pygame, xInit, self.screen_height - 102, 64, 64, 450, assets(pygame).getEnemy())
+        e.vel = random.randint(1, 4) * self.dificultyMultiplier
         return e
 
     def initEnemies(self):
@@ -54,6 +56,7 @@ class main():
         self.man.life = 100;
         self.man.x = (self.screen_width - (self.screen_width / 2)) - 64
         self.man.score = 0
+        self.dificultyMultiplier = 0.4
         self.initEnemies()
 
     def redraw(self):
@@ -65,8 +68,8 @@ class main():
             txtFinalScore = self.font.render("Final Score: {}".format(self.man.score), True, (255, 0, 0))
             self.win.blit(txtFinalScore, [self.screen_width // 2 - txtFinalScore.get_width() // 2, self.screen_height // 2 - txtFinalScore.get_height() // 2 + 120])
 
-            keys = self.pygame.key.get_pressed()
-            if keys[self.pygame.K_KP_ENTER] or keys[self.pygame.K_RETURN]:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]:
                 self.resetGame()
 
         else:
@@ -86,7 +89,7 @@ class main():
             self.win.blit(self.textScore, [10, 50])
             self.win.blit(textScoreValue, [self.textScore.get_width() + 10, 50])
 
-        self.pygame.display.update()
+        pygame.display.update()
 
     def run(self):
         run = True
@@ -94,8 +97,8 @@ class main():
         while run:
             self.clock.tick(self.fps)
 
-            for event in self.pygame.event.get():
-                if event.type == self.pygame.QUIT:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                         run = False
 
             self.man.move(self.screen_width, self.screen_height)
@@ -110,9 +113,13 @@ class main():
                 for x in range(0, len(self.enemies) - 1):
                     self.enemies.append(self.newEnemy(x))
 
+            if self.man.score % 10 == 0:
+                self.man.score += 1 # Alternate solution for this 😂
+                self.dificultyMultiplier += 0.1
+
             self.redraw()
 
-        self.pygame.quit()
+        pygame.quit()
 
 
 main().run()
