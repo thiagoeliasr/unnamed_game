@@ -32,11 +32,11 @@ class enemy(object):
             self.walkCount += 1
 
 
-        fontLabel = self.pygame.font.Font("fonts/Abibas.ttf", 10)
-        health = fontLabel.render("Health: ", True, (255, 0, 0))
-        healthValue = fontLabel.render(str(self.life), True, (255, 0, 0))
-        win.blit(health, [self.x + 20, self.y - 10])
-        win.blit(healthValue, [self.x + 60, self.y - 10])
+        # fontLabel = self.pygame.font.Font("fonts/Abibas.ttf", 10)
+        # health = fontLabel.render("Health: ", True, (255, 0, 0))
+        # healthValue = fontLabel.render(str(self.life), True, (255, 0, 0))
+        # win.blit(health, [self.x + 20, self.y - 10])
+        # win.blit(healthValue, [self.x + 60, self.y - 10])
 
         self.hitbox = (self.x + 17, self.y + 2, 31, 57)
         # self.pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
