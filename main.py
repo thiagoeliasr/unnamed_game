@@ -2,6 +2,7 @@ import pygame
 import random
 from player import player
 from enemy import enemy
+from apple import apple
 from assets import assets
 
 class main():
@@ -36,6 +37,7 @@ class main():
         self.textNewGame = self.fontSmall.render("Press ENTER to start a new game", True, (255, 255, 0))
 
         self.man = player(pygame, (self.screen_width - (self.screen_width / 2) - 65), self.screen_height - 106, 64, 64, assets(pygame).getMan())
+        self.apple = apple(pygame, (self.screen_width - (self.screen_width / 2) - 32), self.screen_height - 70, 32, 32, assets(pygame).getApple())
         self.enemies = []
 
     def newEnemy(self, x):
@@ -53,11 +55,16 @@ class main():
             self.enemies.append(self.newEnemy(x))
 
     def resetGame(self):
-        self.man.life = 100;
+        self.man.life = 100
         self.man.x = (self.screen_width - (self.screen_width / 2)) - 64
         self.man.score = 0
         self.dificultyMultiplier = 0.4
         self.initEnemies()
+
+    def spawnApple(self):
+        if self.apple.visible == False:
+            self.apple.x = random.randint(5, self.screen_width - 5)
+            self.apple.visible = True
 
     def redraw(self):
         if self.man.life < 1:
@@ -77,6 +84,7 @@ class main():
             self.win.blit(self.level, self.win.get_rect())
 
             self.man.draw(self.win)
+            self.apple.draw(self.win, self.man)
 
             for goblin in self.enemies:
                 goblin.draw(self.win, self.man)
@@ -109,13 +117,19 @@ class main():
                 if goblin.life < 1:
                     self.enemies.pop(self.enemies.index(goblin))
 
+            # if self.man.score > 0 and self.man.score % 60 == 0:
+            if self.man.score > 0 and self.man.score % 10 == 0:
+                self.spawnApple()
+
+            self.apple.checkEaten(self.man)
+
             if len(self.enemies) < 5:
                 for x in range(0, len(self.enemies) - 1):
                     self.enemies.append(self.newEnemy(x))
 
             if self.man.score % 10 == 0:
                 self.man.score += 1 # Alternate solution for this 😂
-                self.dificultyMultiplier += 0.1
+                self.dificultyMultiplier += 0.001
 
             self.redraw()
 

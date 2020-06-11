@@ -47,6 +47,13 @@ class assets():
 
         return obj
 
+    def getApple(self):
+        obj = Object()
+        obj.w = 16
+        obj.y = 16
+        obj.img = self.pygame.image.load(self.imgPath + 'items/apple.png')
+        return obj
+
     def getGroundBlock(self):
         obj = Object()
         obj.w = 48
